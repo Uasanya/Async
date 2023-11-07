@@ -8,17 +8,18 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NumberViewModel(private val repository: Repository) : ViewModel() {
 
-    private val _randomNumberFlow = MutableStateFlow(0)
-    val randomNumberFlow: StateFlow<Int> get() = _randomNumberFlow
+    private val _numbers = MutableStateFlow<List<Int>>(emptyList())
+    val numbers: StateFlow<List<Int>> get() = _numbers
 
     fun getRandomNumbers(){
         viewModelScope.launch{
             repository.getRandomFlow().collect{ randomNumber ->
-                _randomNumberFlow.value = randomNumber
+                _numbers.update { it + randomNumber }
             }
         }
     }

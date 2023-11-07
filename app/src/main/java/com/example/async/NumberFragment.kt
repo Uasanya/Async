@@ -36,16 +36,14 @@ class NumberFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rv.adapter = adapter
         viewModel.getRandomNumbers()
-        val list = mutableListOf(1, 2, 3, 4, 5, 6)
+
 
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.randomNumberFlow.collect { number ->
-                Log.i("TEG", number.toString())
-                list.add(number)
+            viewModel.numbers.collect { list ->
+                Log.i("TEG", list.toString())
                 adapter.submitList(list)
             }
         }
-
     }
 
     override fun onDestroyView() {
