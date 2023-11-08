@@ -21,11 +21,14 @@ class NumberFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val adapter: NumberAdapter = NumberAdapter()
-    private val viewModel: NumberViewModel by lazy {
-        val repository = Repository()
-        val factory = NumberViewModel.provideFactory(repository, this)
-        ViewModelProvider(this, factory)[NumberViewModel::class.java]
-    }
+//    private val viewModel: NumberViewModel by lazy {
+//        val repository = Repository()
+//        val factory = NumberViewModel.provideFactory(repository, this)
+//        ViewModelProvider(this, factory)[NumberViewModel::class.java]
+//    }
+    private val randomNumber : RandomNumber by lazy{
+        RandomNumber()
+}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,21 +40,27 @@ class NumberFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rv.adapter = adapter
-        viewModel.getRandomNumbers()
 
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.numbers.collect { list ->
-                    Log.i("TEG", list.toString())
-                    adapter.submitList(list)
-                }
-            }
+        randomNumber.randomNumberLiveData.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
         }
+        randomNumber.startGeneratingRandomNumbers()
+        // viewModel.getRandomNumbers()
+
+
+//        lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.numbers.collect { list ->
+//                    Log.i("TEG", list.toString())
+//                    adapter.submitList(list)
+//                }
+//            }
+//        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        randomNumber.stopGeneratingRandomNumbers()
     }
 }
