@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.async.databinding.FragmentNumberBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,10 +40,12 @@ class NumberFragment : Fragment() {
         viewModel.getRandomNumbers()
 
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.numbers.collect { list ->
-                Log.i("TEG", list.toString())
-                adapter.submitList(list)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.numbers.collect { list ->
+                    Log.i("TEG", list.toString())
+                    adapter.submitList(list)
+                }
             }
         }
     }
