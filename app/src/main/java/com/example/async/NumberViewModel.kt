@@ -1,45 +1,36 @@
 package com.example.async
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlin.random.Random
 
-class NumberViewModel(private val repository: Repository) : ViewModel() {
+class NumberViewModel : ViewModel() {
 
-    private val _numbers = MutableStateFlow<List<Int>>(emptyList())
-    val numbers: StateFlow<List<Int>> get() = _numbers
+    private val _randomNumberLiveData = MutableLiveData<Int>()
+    val randomNumberLiveData: LiveData<Int>
+        get() = _randomNumberLiveData
+    private var isRunning = false
 
-    fun getRandomNumbers(){
-        viewModelScope.launch{
-            repository.getRandomFlow().collect{ randomNumber ->
-                _numbers.update { it + randomNumber }
-            }
-        }
-    }
-
-    companion object {
-
-        fun provideFactory(
-            repository: Repository,
-            owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
-        ): AbstractSavedStateViewModelFactory =
-            object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    return NumberViewModel(repository) as T
+    fun getRandomNumbers() {
+        object : Thread() {
+            override fun run() {
+                isRunning = true
+                while (isRunning) {
+                    try {
+                        val randomNumber = Random.nextInt(0, 100)
+                        _randomNumberLiveData.postValue(randomNumber)
+                        sleep(1000)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
                 }
             }
+        }.start()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        isRunning = false
     }
 }
