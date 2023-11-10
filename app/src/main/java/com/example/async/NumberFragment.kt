@@ -27,7 +27,6 @@ class NumberFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rv.adapter = adapter
-        viewModel.getRandomNumbers()
         viewModel.randomNumberLiveData.observe(viewLifecycleOwner) { list ->
             Log.i("TEG", list.toString())
             adapter.submitList(list)
