@@ -53,4 +53,9 @@ dependencies {
     //viewmodel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
+
+    //rx
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
