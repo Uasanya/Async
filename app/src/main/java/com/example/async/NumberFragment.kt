@@ -11,7 +11,6 @@ import com.example.async.databinding.FragmentNumberBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-
 class NumberFragment : Fragment() {
 
     private val disposable = CompositeDisposable()
