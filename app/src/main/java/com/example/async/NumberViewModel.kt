@@ -7,10 +7,11 @@ import kotlin.random.Random
 
 class NumberViewModel : ViewModel() {
 
-    private val _randomNumberLiveData = MutableLiveData<Int>()
-    val randomNumberLiveData: LiveData<Int>
+    private val _randomNumberLiveData = MutableLiveData<List<Int>>()
+    val randomNumberLiveData: LiveData<List<Int>>
         get() = _randomNumberLiveData
     private var isRunning = false
+    private var list = listOf<Int>()
 
     fun getRandomNumbers() {
         object : Thread() {
@@ -19,7 +20,8 @@ class NumberViewModel : ViewModel() {
                 while (isRunning) {
                     try {
                         val randomNumber = Random.nextInt(0, 100)
-                        _randomNumberLiveData.postValue(randomNumber)
+                        list = list + randomNumber
+                        _randomNumberLiveData.postValue(list)
                         sleep(1000)
                     } catch (e: InterruptedException) {
                         e.printStackTrace()

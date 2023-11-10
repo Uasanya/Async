@@ -14,7 +14,6 @@ class NumberFragment : Fragment() {
 
     private var _binding: FragmentNumberBinding? = null
     private val binding get() = _binding!!
-    private val list = arrayListOf<Int>()
     private val adapter: NumberAdapter = NumberAdapter()
     private val viewModel: NumberViewModel by viewModels()
 
@@ -28,13 +27,10 @@ class NumberFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rv.adapter = adapter
-        viewModel.getRandomNumbers(
-        )
-        viewModel.randomNumberLiveData.observe(viewLifecycleOwner) { number ->
-            Log.i("TEG", number.toString())
-            list.add(number)
+        viewModel.getRandomNumbers()
+        viewModel.randomNumberLiveData.observe(viewLifecycleOwner) { list ->
+            Log.i("TEG", list.toString())
             adapter.submitList(list)
-            adapter.notifyDataSetChanged()
         }
     }
 
